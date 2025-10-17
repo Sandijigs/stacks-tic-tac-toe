@@ -1,4 +1,15 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Stacks Tic-Tac-Toe
+
+A decentralized Tic-Tac-Toe game built on the Stacks blockchain. This [Next.js](https://nextjs.org) project allows players to create games, place bets in STX, and compete against each other on-chain.
+
+## Features
+
+- **Create Games**: Start a new game with a custom bet amount in STX
+- **Join Games**: Join any available game created by other players
+- **Play On-Chain**: All game moves are recorded on the Stacks blockchain
+- **Spectate Mode**: Watch any game in progress without connecting a wallet
+- **Wallet Integration**: Connect your Stacks wallet to play and manage your games
+- **Real-time Updates**: View active games, joinable games, and ended games
 
 ## Getting Started
 
@@ -16,7 +27,23 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
+
+- `/app` - Next.js app router pages
+  - `/page.tsx` - Home page with game lists
+  - `/create/page.tsx` - Create new game page
+  - `/game/[gameId]/page.tsx` - Individual game page
+  - `/spectate/page.tsx` - Spectate mode to view all games
+- `/components` - Reusable React components
+  - `navbar.tsx` - Navigation bar with wallet connection
+  - `game-board.tsx` - Tic-tac-toe board component
+  - `games-list.tsx` - Display lists of games
+  - `play-game.tsx` - Game play interface
+- `/lib` - Utility functions and contract interactions
+  - `contract.ts` - Stacks smart contract integration
+  - `stx-utils.ts` - STX formatting and helper functions
+- `/hooks` - Custom React hooks
+  - `use-stacks.ts` - Stacks wallet integration hook
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
