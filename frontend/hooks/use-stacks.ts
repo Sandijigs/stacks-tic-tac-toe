@@ -124,12 +124,19 @@ export function useStacks() {
   }
 
   useEffect(() => {
-    if (userSession.isSignInPending()) {
-      userSession.handlePendingSignIn().then((userData) => {
-        setUserData(userData);
-      });
-    } else if (userSession.isUserSignedIn()) {
-      setUserData(userSession.loadUserData());
+    try {
+      if (userSession.isSignInPending()) {
+        userSession.handlePendingSignIn().then((userData) => {
+          setUserData(userData);
+        });
+      } else if (userSession.isUserSignedIn()) {
+        setUserData(userSession.loadUserData());
+      }
+    } catch (error) {
+      // Handle corrupted session data by clearing localStorage
+      console.error("Error loading user session:", error);
+      localStorage.clear();
+      setUserData(null);
     }
   }, []);
 
