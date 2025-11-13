@@ -5,13 +5,6 @@ import Client from "@walletconnect/sign-client";
 import type { SessionTypes } from "@walletconnect/types";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 
-const chains = [
-  "stacks:1",
-  "stacks:2147483648",
-  "bip122:000000000019d6689c085ae165831e93",
-  "bip122:000000000933ea01ad0ee984209779ba",
-];
-
 type SignClientType = Awaited<ReturnType<typeof Client.init>>;
 
 interface WalletConnectContextType {
@@ -102,7 +95,7 @@ export function WalletConnectProvider({ children }: { children: ReactNode }) {
       setAddress(undefined);
 
       let uri: string | undefined;
-      let approval: any;
+      let approval: () => Promise<SessionTypes.Struct>;
 
       if (selectedChain.includes("stacks")) {
         const result = await client.connect({
