@@ -8,10 +8,23 @@ A decentralized Tic-Tac-Toe game built on the Stacks blockchain. This [Next.js](
 - **Join Games**: Join any available game created by other players
 - **Play On-Chain**: All game moves are recorded on the Stacks blockchain
 - **Spectate Mode**: Watch any game in progress without connecting a wallet
-- **Wallet Integration**: Connect your Stacks wallet to play and manage your games
+- **Wallet Integration**: Connect your Stacks wallet via Stacks Connect or WalletConnect
+- **WalletConnect Support**: Connect mobile wallets securely using WalletConnect protocol
 - **Real-time Updates**: View active games, joinable games, and ended games
 
 ## Getting Started
+
+### Prerequisites
+
+Create a `.env.local` file in the frontend directory with your WalletConnect project ID:
+
+```bash
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_project_id_here
+```
+
+You can get a project ID by registering at [WalletConnect Cloud](https://cloud.walletconnect.com/).
+
+### Run Development Server
 
 First, run the development server:
 

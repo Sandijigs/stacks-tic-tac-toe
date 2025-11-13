@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
+import { WalletConnectProvider } from "@/contexts/WalletConnectContext";
 
 export const metadata: Metadata = {
   title: "Tic Tac Toe",
@@ -15,8 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        {children}
+        <WalletConnectProvider>
+          <Navbar />
+          {children}
+        </WalletConnectProvider>
       </body>
     </html>
   );
