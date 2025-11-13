@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import Client from "@walletconnect/sign-client";
-import type { SignClient } from "@walletconnect/sign-client/dist/types/client";
 import type { SessionTypes } from "@walletconnect/types";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 
@@ -13,8 +12,10 @@ const chains = [
   "bip122:000000000933ea01ad0ee984209779ba",
 ];
 
+type SignClientType = Awaited<ReturnType<typeof Client.init>>;
+
 interface WalletConnectContextType {
-  client: SignClient | undefined;
+  client: SignClientType | undefined;
   session: SessionTypes.Struct | undefined;
   chain: string | undefined;
   address: string | undefined;
@@ -36,12 +37,14 @@ const WalletConnectContext = createContext<WalletConnectContextType>({
 export const useWalletConnect = () => useContext(WalletConnectContext);
 
 export function WalletConnectProvider({ children }: { children: ReactNode }) {
-  const [client, setClient] = useState<SignClient | undefined>(undefined);
+  const [client, setClient] = useState<SignClientType | undefined>(undefined);
   const [session, setSession] = useState<SessionTypes.Struct | undefined>(undefined);
   const [chain, setChain] = useState<string | undefined>(undefined);
   const [address, setAddress] = useState<string | undefined>(undefined);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const initClient = async () => {
       try {
         const c = await Client.init({
@@ -98,34 +101,41 @@ export function WalletConnectProvider({ children }: { children: ReactNode }) {
       setChain(undefined);
       setAddress(undefined);
 
-      const connectParams = selectedChain.includes("stacks")
-        ? {
-            pairingTopic: undefined,
-            requiredNamespaces: {
-              stacks: {
-                methods: [
-                  "stacks_signMessage",
-                  "stacks_stxTransfer",
-                  "stacks_contractCall",
-                  "stacks_contractDeploy",
-                ],
-                chains: [selectedChain],
-                events: [],
-              },
-            },
-          }
-        : {
-            pairingTopic: undefined,
-            requiredNamespaces: {
-              bip122: {
-                methods: ["bitcoin_btcTransfer"],
-                chains: [selectedChain],
-                events: [],
-              },
-            },
-          };
+      let uri: string | undefined;
+      let approval: any;
 
-      const { uri, approval } = await client.connect(connectParams);
+      if (selectedChain.includes("stacks")) {
+        const result = await client.connect({
+          pairingTopic: undefined,
+          requiredNamespaces: {
+            stacks: {
+              methods: [
+                "stacks_signMessage",
+                "stacks_stxTransfer",
+                "stacks_contractCall",
+                "stacks_contractDeploy",
+              ],
+              chains: [selectedChain],
+              events: [],
+            },
+          },
+        });
+        uri = result.uri;
+        approval = result.approval;
+      } else {
+        const result = await client.connect({
+          pairingTopic: undefined,
+          requiredNamespaces: {
+            bip122: {
+              methods: ["bitcoin_btcTransfer"],
+              chains: [selectedChain],
+              events: [],
+            },
+          },
+        });
+        uri = result.uri;
+        approval = result.approval;
+      }
 
       if (uri) {
         QRCodeModal.open(uri, () => {
